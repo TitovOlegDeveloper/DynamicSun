@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DynamicSun.Domain.Entities
 {
-    internal class Weather
+    public class Weather
     {
         public int Id { get; set; }     
         public DateOnly? Date { get; set; }  
