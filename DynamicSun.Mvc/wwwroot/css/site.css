@@ -1,3 +1,8 @@
+*{
+    margin:0;
+    padding:0;
+}
+
 html {
   font-size: 14px;
 }
@@ -19,4 +24,25 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.bg-image {
+    background-image: url("../images/moscow-image.jpg");
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-position: center; 
+}
+
+
+@keyframes scroll-text {
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+.marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    animation: scroll-text 10s linear infinite;
 }
