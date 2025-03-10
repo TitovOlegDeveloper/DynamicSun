@@ -18,6 +18,11 @@ namespace DynamicSun.Mvc.Controllers
             return View();
         }
 
+        public IActionResult LoadReport()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
