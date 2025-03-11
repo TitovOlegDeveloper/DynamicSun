@@ -1,5 +1,10 @@
 ﻿using DynamicSun.Domain.Abstractions;
+using DynamicSun.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -24,7 +29,6 @@ namespace DynamicSun.Service
                 {
                     if (file != null && file.Length > 0)
                     {
-                       
                         string fileName = Path.GetFileName(file.FileName);
                         string fileExtension = Path.GetExtension(fileName).ToLower();
                         if (_helper.CheckFileExtension(fileExtension))
@@ -33,25 +37,57 @@ namespace DynamicSun.Service
                             {
                                 using (var stream = new MemoryStream())
                                 {
-                                    
+
                                     file.CopyTo(stream);
                                     stream.Position = 0;
 
-                                    using (ExcelPackage package = new ExcelPackage(stream))
+
+                                    IWorkbook workbook = null;
+
+                                    if (fileExtension == ".xlsx")
                                     {
-                                        ExcelWorksheet worksheet = package.Workbook.Worksheets[1]; //Первый лист (индексация с 1)
-                                        int rowCount = worksheet.Dimension?.Rows ?? 0; //rowCount
-                                        int colCount = worksheet.Dimension?.Columns ?? 0; //colCount
-                                                                                          //Проходим по всем строкам и столбцам, начиная со второй строчки
-                                        for (int row = 2; row <= rowCount; row++)
+                                        workbook = new XSSFWorkbook(stream);
+                                    }
+                                    else if (fileExtension == ".xls")
+                                    {
+                                        workbook = new HSSFWorkbook(stream);
+                                    }
+     
+
+                                    if (workbook != null)
+                                    {
+                                        for (int i = 0; i < workbook.NumberOfSheets;i++)
                                         {
-                                            for (int col = 1; col <= colCount; col++)
+                                            ISheet sheet = workbook.GetSheetAt(i); 
+                                            if (sheet != null)
                                             {
-                                                object cellValue = worksheet.Cells[row, col].Value;
-                                                //Console.WriteLine($"Row: {row}, Col: {col}, Value: {cellValue}");
+                                                int rowCount = sheet.LastRowNum; 
+                                                IRow firstRow = sheet.GetRow(0);
+                                                int colCount = firstRow != null ? firstRow.LastCellNum : 0;
+
+                                                for (int row = 4; row <= rowCount; row++)
+                                                {
+                                                    IRow currentRow = sheet.GetRow(row);
+
+                                                    if (currentRow != null)
+                                                    {
+                                                       
+                                                            
+
+                                                            object cellValue = null; 
+
+                                                            if (cell != null) 
+                                                            {
+                                                                Console.WriteLine($"Row: {row + 1}, Value: {cellValue} + {cell2}");  // Row и Col +1 для удобства отображения (индексация с 1)
+                                                            }
+
+                                                        
+                                                    }
+                                                }
                                             }
                                         }
 
+                                        
                                     }
                                 }
                             }
@@ -62,7 +98,7 @@ namespace DynamicSun.Service
                         }
                         else
                         {
-                            return $"Неверный формат файла: {fileName}.  Разрешены только .xlsx, .xls и .csv";
+                            return $"Неверный формат файла: {fileName}.  Разрешены только .xlsx, .xls";
                         }
                     }
                 }
@@ -72,6 +108,38 @@ namespace DynamicSun.Service
             {
                 return ex.ToString();
             }
+        }
+
+        public void AddModel(
+            string date,
+            string time,
+            string temeperature,
+            string air,
+            string dew, 
+            string pressure,
+            string wind, 
+            string speed,
+            string cloudiness,
+            string limit,
+            string visibility,
+            string appearance
+            )
+        {
+            Weather weather = new Weather()
+            {
+                Date = DateOnly.FromDateTime(Convert.ToDateTime(date)) != null ? DateOnly.FromDateTime(Convert.ToDateTime(date)) : null,
+                Time = TimeOnly.FromDateTime(Convert.ToDateTime(time)) != null ? TimeOnly.FromDateTime(Convert.ToDateTime(time)) : null,
+                Temperature = Convert.ToDecimal(temeperature) != null ? Convert.ToDecimal(temeperature) : null,
+                AirHumidity = Convert.ToDecimal(air) != null ? Convert.ToDecimal(air) : null,
+                DewPoint = Convert.ToDecimal(dew) != null ? Convert.ToDecimal(dew) : null,
+                Pressure = Convert.ToDecimal(pressure) != null ? Convert.ToDecimal(pressure) : null,
+                Wind = Convert.ToString(wind) != null ? Convert.ToString(wind) : "",
+                WindSpeed = Convert.ToInt32(speed) != null ? Convert.ToInt32(speed) : 0,
+                Cloudiness = Convert.ToInt32(cloudiness) != null ? Convert.ToInt32(cloudiness) : 0,
+                CloudLimit = Convert.ToInt32(limit) != null ? Convert.ToInt32(limit) : 0,
+                HorizontalVisibility = Convert.ToInt32(visibility) != null ? Convert.ToInt32(visibility) : 0,
+                Appearance = Convert.ToString(appearance) != null ? Convert.ToString(appearance) : "",
+            };
         }
     }
 }

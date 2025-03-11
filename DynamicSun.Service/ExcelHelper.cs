@@ -12,7 +12,6 @@ namespace DynamicSun.Service
         {
             return fileExtension == ".xlsx"
                  || fileExtension == ".xls"
-                 || fileExtension == ".csv"
                  ? true : false;
         }
     }
