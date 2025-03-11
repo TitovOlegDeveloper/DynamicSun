@@ -1,3 +1,9 @@
+using DynamicSun.Domain.Abstractions;
+using DynamicSun.Service;
+
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews()
@@ -6,6 +12,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddSingleton<ILoadService, LoadService>();
 
 
 var app = builder.Build();

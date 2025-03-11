@@ -1,15 +1,28 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DynamicSun.Domain.Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace DynamicSun.Mvc.Controllers
 {
     public class LoadController : Controller
     {
-        [HttpPost]
-        public IActionResult UploadFiles()
+        ILoadService _loadService;
+
+        public LoadController(ILoadService loadService)
         {
-            return RedirectToAction("Index"); 
+            _loadService = loadService;
         }
-      
+
+        [HttpPost]
+        public IActionResult AddFiles(IFormFile[] files)
+
+        {
+            string result = _loadService.LoadFiles(files);
+            ViewBag.Message = result;
+            return View("../Home/LoadReport");
+           
+        }
+     
     }
 }

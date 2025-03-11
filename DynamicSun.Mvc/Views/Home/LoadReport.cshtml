@@ -10,11 +10,19 @@
 <div class="text-center bg-image min-vh-100 d-flex justify-content-center align-items-center flex-column ">
     <h1 class="display-4 text-white  fw-bold ">@ViewData["Title"]</h1>
     <h2 class="text-white fw-normal">Вы можете загрузить несколько файлов Excel сразу</h2>
-    <form asp-controller="Load" asp-action="UploadFiles" method="post" enctype="multipart/form-data">
+    <form asp-controller="Load" asp-action="AddFiles" method="post" enctype="multipart/form-data">
         <div class="m-5">
-            <input  type="file" name="files" multiple class="form-control" />
+            <input type="file" name="files" multiple class="form-control" accept="*/*" />
             <button type="submit" class="w-100 h-100 bg-transparent text-white p-3 mb-3 fw-bold border-2 border-white">Выбрать файлы</button>
         </div>
+        <p class=" text-white">
+            @if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+
+                @ViewBag.Message
+
+            }
+        </p>  
     </form>
 </div>
 
