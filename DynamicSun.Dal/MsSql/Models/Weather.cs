@@ -11,7 +11,7 @@ namespace DynamicSun.Dal.MsSql.Models
     {
         public int Id { get; set; }
         public DateTime? Date { get; set; }
-        public string Time { get; set; }
+        public string? Time { get; set; }
         public decimal? Temperature { get; set; }
         public decimal? AirHumidity { get; set; }
         public decimal? DewPoint { get; set; }

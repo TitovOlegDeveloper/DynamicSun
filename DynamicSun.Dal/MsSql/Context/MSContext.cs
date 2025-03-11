@@ -23,6 +23,11 @@ namespace DynamicSun.Dal.MsSql.Context
 
         }
 
-        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=252-584;Database=DynamicSunBase;Integrated Security=True;Encrypt=False;");
+        }
+
+
     }
 }
