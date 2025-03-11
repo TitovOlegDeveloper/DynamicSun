@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicSun.Mvc", "DynamicSu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicSun.Service", "DynamicSun.Service\DynamicSun.Service.csproj", "{58E0C748-EB98-4D4E-93ED-19B46A6B8279}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicSun.Dal", "DynamicSun.Dal\DynamicSun.Dal.csproj", "{76AD2579-511C-4393-A4F4-A1C9A0F36176}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{58E0C748-EB98-4D4E-93ED-19B46A6B8279}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58E0C748-EB98-4D4E-93ED-19B46A6B8279}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58E0C748-EB98-4D4E-93ED-19B46A6B8279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76AD2579-511C-4393-A4F4-A1C9A0F36176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76AD2579-511C-4393-A4F4-A1C9A0F36176}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76AD2579-511C-4393-A4F4-A1C9A0F36176}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76AD2579-511C-4393-A4F4-A1C9A0F36176}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,13 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="7.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="NPOI" Version="2.7.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DynamicSun.Domain\DynamicSun.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DynamicSun.Mvc">
+      <HintPath>..\DynamicSun.Mvc\bin\Debug\net8.0\DynamicSun.Mvc.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

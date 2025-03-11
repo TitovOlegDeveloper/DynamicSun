@@ -1,11 +1,9 @@
 ﻿using DynamicSun.Domain.Abstractions;
-using DynamicSun.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +15,7 @@ namespace DynamicSun.Service
     public class LoadService : ILoadService
     {
 
-
+       
         Helper _helper = new ExcelHelper();
 
         public string LoadFiles(IFormFile[] files)
@@ -71,17 +69,25 @@ namespace DynamicSun.Service
 
                                                     if (currentRow != null)
                                                     {
-                                                       
-                                                            
-
-                                                            object cellValue = null; 
-
-                                                            if (cell != null) 
-                                                            {
-                                                                Console.WriteLine($"Row: {row + 1}, Value: {cellValue} + {cell2}");  // Row и Col +1 для удобства отображения (индексация с 1)
-                                                            }
-
+                                                        //Weather weather =  Weather.AddWeatherRow
+                                                        //     (
+                                                        //     currentRow.GetCell(0).ToString() ?? "",
+                                                        //    currentRow.GetCell(1).ToString() ?? "",
+                                                        //    currentRow.GetCell(2).ToString() ?? "",
+                                                        //    currentRow.GetCell(3).ToString() ?? "",
+                                                        //    currentRow.GetCell(4).ToString() ?? "",
+                                                        //    currentRow.GetCell(5).ToString() ?? "",
+                                                        //    currentRow.GetCell(6).ToString() ?? "",
+                                                        //    currentRow.GetCell(7).ToString() ?? "",
+                                                        //    currentRow.GetCell(8).ToString() ?? "",
+                                                        //    currentRow.GetCell(9).ToString() ?? "",
+                                                        //    currentRow.GetCell(10).ToString() ?? "",
+                                                        //    currentRow.GetCell(11).ToString() ?? ""
+                                                        //    );
                                                         
+                                                       
+                                                        //if(weather != null)
+                                                        //_weathers.Add(weather);
                                                     }
                                                 }
                                             }
@@ -102,44 +108,16 @@ namespace DynamicSun.Service
                         }
                     }
                 }
+
+               // _db.Weathers.AddRange(_weathers);
+               // _db.SaveChanges();
+
                 return "Файлы успешно обработаны!";
             }
             catch (Exception ex)
             {
                 return ex.ToString();
             }
-        }
-
-        public void AddModel(
-            string date,
-            string time,
-            string temeperature,
-            string air,
-            string dew, 
-            string pressure,
-            string wind, 
-            string speed,
-            string cloudiness,
-            string limit,
-            string visibility,
-            string appearance
-            )
-        {
-            Weather weather = new Weather()
-            {
-                Date = DateOnly.FromDateTime(Convert.ToDateTime(date)) != null ? DateOnly.FromDateTime(Convert.ToDateTime(date)) : null,
-                Time = TimeOnly.FromDateTime(Convert.ToDateTime(time)) != null ? TimeOnly.FromDateTime(Convert.ToDateTime(time)) : null,
-                Temperature = Convert.ToDecimal(temeperature) != null ? Convert.ToDecimal(temeperature) : null,
-                AirHumidity = Convert.ToDecimal(air) != null ? Convert.ToDecimal(air) : null,
-                DewPoint = Convert.ToDecimal(dew) != null ? Convert.ToDecimal(dew) : null,
-                Pressure = Convert.ToDecimal(pressure) != null ? Convert.ToDecimal(pressure) : null,
-                Wind = Convert.ToString(wind) != null ? Convert.ToString(wind) : "",
-                WindSpeed = Convert.ToInt32(speed) != null ? Convert.ToInt32(speed) : 0,
-                Cloudiness = Convert.ToInt32(cloudiness) != null ? Convert.ToInt32(cloudiness) : 0,
-                CloudLimit = Convert.ToInt32(limit) != null ? Convert.ToInt32(limit) : 0,
-                HorizontalVisibility = Convert.ToInt32(visibility) != null ? Convert.ToInt32(visibility) : 0,
-                Appearance = Convert.ToString(appearance) != null ? Convert.ToString(appearance) : "",
-            };
         }
     }
 }

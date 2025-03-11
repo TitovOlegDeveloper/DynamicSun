@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DynamicSun.Domain.Migrations
+namespace DynamicSun.Dal.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -18,7 +18,7 @@ namespace DynamicSun.Domain.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateOnly>(type: "date", nullable: true),
-                    Time = table.Column<TimeOnly>(type: "time", nullable: true),
+                    Time = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Temperature = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     AirHumidity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     DewPoint = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
