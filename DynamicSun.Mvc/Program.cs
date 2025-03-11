@@ -16,7 +16,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<ILoadService, LoadService>();
+builder.Services.AddScoped<ILoadService, LoadService>();
 builder.Services.AddScoped<IWeather, Weather>();
 
 var ConnectionString = builder.Configuration.GetConnectionString("Default");

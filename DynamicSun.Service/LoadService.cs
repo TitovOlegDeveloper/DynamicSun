@@ -1,23 +1,33 @@
-﻿using DynamicSun.Domain.Abstractions;
+﻿using DynamicSun.Dal.MsSql.Context;
+using DynamicSun.Dal.MsSql.Models;
+using DynamicSun.Domain.Abstractions;
 using Microsoft.AspNetCore.Http;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ICell = NPOI.SS.UserModel.ICell;
 
 namespace DynamicSun.Service
 {
     public class LoadService : ILoadService
     {
 
-       
-        Helper _helper = new ExcelHelper();
+        MSContext _db;
 
+        public LoadService(MSContext db)
+        {
+            _db = db;
+        }
+
+        Helper _helper = new ExcelHelper();
+        List<Weather> _weathers = new List<Weather>();
         public string LoadFiles(IFormFile[] files)
         {
             try
@@ -50,7 +60,6 @@ namespace DynamicSun.Service
                                     {
                                         workbook = new HSSFWorkbook(stream);
                                     }
-     
 
                                     if (workbook != null)
                                     {
@@ -69,25 +78,29 @@ namespace DynamicSun.Service
 
                                                     if (currentRow != null)
                                                     {
-                                                        //Weather weather =  Weather.AddWeatherRow
-                                                        //     (
-                                                        //     currentRow.GetCell(0).ToString() ?? "",
-                                                        //    currentRow.GetCell(1).ToString() ?? "",
-                                                        //    currentRow.GetCell(2).ToString() ?? "",
-                                                        //    currentRow.GetCell(3).ToString() ?? "",
-                                                        //    currentRow.GetCell(4).ToString() ?? "",
-                                                        //    currentRow.GetCell(5).ToString() ?? "",
-                                                        //    currentRow.GetCell(6).ToString() ?? "",
-                                                        //    currentRow.GetCell(7).ToString() ?? "",
-                                                        //    currentRow.GetCell(8).ToString() ?? "",
-                                                        //    currentRow.GetCell(9).ToString() ?? "",
-                                                        //    currentRow.GetCell(10).ToString() ?? "",
-                                                        //    currentRow.GetCell(11).ToString() ?? ""
-                                                        //    );
-                                                        
-                                                       
-                                                        //if(weather != null)
-                                                        //_weathers.Add(weather);
+                                                        string appearanceValue = string.Empty;
+                                                        ICell appearanceCell = currentRow.GetCell(11);
+
+                                                        if (appearanceCell != null)
+                                                        {
+                                                            appearanceValue = appearanceCell.ToString(); // Теперь безопасно вызывать ToString()
+                                                        }
+                                                        else
+                                                        {
+                                                            // Обработка случая, когда ячейка отсутствует (NULL)
+                                                            Console.WriteLine("Ячейка 11 отсутствует в строке.");
+                                                            appearanceValue = string.Empty; // Или другое значение по умолчанию
+                                                        }
+
+
+                                                        Weather weather = new Weather
+                                                        {
+                                                            // ... другие свойства ...
+                                                            Appearance = appearanceValue // Используем значение, полученное с проверкой на null
+                                                        };
+
+                                                        if (weather != null)
+                                                        _weathers.Add(weather);
                                                     }
                                                 }
                                             }
@@ -109,8 +122,12 @@ namespace DynamicSun.Service
                     }
                 }
 
-               // _db.Weathers.AddRange(_weathers);
-               // _db.SaveChanges();
+                using (var db = new MSContext())
+                {
+                    db.Weathers.AddRange(_weathers);
+                    db.SaveChanges();
+
+                }
 
                 return "Файлы успешно обработаны!";
             }

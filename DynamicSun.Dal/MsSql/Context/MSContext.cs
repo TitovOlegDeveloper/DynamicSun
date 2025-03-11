@@ -12,7 +12,13 @@ namespace DynamicSun.Dal.MsSql.Context
     {
         public DbSet<Weather> Weathers { get; set; }
 
+     
         public MSContext(DbContextOptions options) : base(options)
+        {
+
+        }
+
+        public MSContext()
         {
 
         }

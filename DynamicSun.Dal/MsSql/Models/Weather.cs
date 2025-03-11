@@ -10,7 +10,7 @@ namespace DynamicSun.Dal.MsSql.Models
     public class Weather : IWeather
     {
         public int Id { get; set; }
-        public DateOnly? Date { get; set; }
+        public DateTime? Date { get; set; }
         public string Time { get; set; }
         public decimal? Temperature { get; set; }
         public decimal? AirHumidity { get; set; }

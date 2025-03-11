@@ -9,7 +9,7 @@ namespace DynamicSun.Domain.Abstractions
     public interface IWeather
     {
         public int Id { get; set; }
-        public DateOnly? Date { get; set; }
+        public DateTime? Date { get; set; }
         public string Time { get; set; }
         public decimal? Temperature { get; set; } // Температура
         public decimal? AirHumidity { get; set; } // Отн. влажность воздуха, %

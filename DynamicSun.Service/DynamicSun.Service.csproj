@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DynamicSun.Dal\DynamicSun.Dal.csproj" />
     <ProjectReference Include="..\DynamicSun.Domain\DynamicSun.Domain.csproj" />
   </ItemGroup>
 
