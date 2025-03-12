@@ -13,7 +13,7 @@
     <form asp-controller="Load" asp-action="AddFiles" method="post" enctype="multipart/form-data">
         <div class="m-5">
             <input type="file" name="files" multiple class="form-control" accept="*/*" />
-            <button type="submit" class="w-100 h-100 bg-transparent text-white p-3 mb-3 fw-bold border-2 border-white">Выбрать файлы</button>
+            <button type="submit" class="w-100 h-100 bg-transparent text-white p-3 mb-3 fw-bold border-2 border-white fs-3">Загрузить</button>
         </div>
         <p class=" text-white">
             @if (!string.IsNullOrEmpty(ViewBag.Message))
@@ -24,6 +24,7 @@
             }
         </p>  
     </form>
+    <a class="nav-link text-white bg-gradient fs-2 mt-5" asp-area="" asp-controller="Home" asp-action="Index">Назад</a>
 </div>
 
 
