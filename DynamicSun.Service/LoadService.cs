@@ -78,25 +78,51 @@ namespace DynamicSun.Service
 
                                                     if (currentRow != null)
                                                     {
-                                                        string appearanceValue = string.Empty;
+
+                                                        ICell dateCell = currentRow.GetCell(0);
+                                                        ICell timeCell = currentRow.GetCell(1);
+                                                        ICell tempCell = currentRow.GetCell(2);
+                                                        ICell airCell = currentRow.GetCell(3);
+                                                        ICell dewCell = currentRow.GetCell(4);
+                                                        ICell pressureCell = currentRow.GetCell(5);
+                                                        ICell windCell = currentRow.GetCell(6);
+                                                        ICell speedCell = currentRow.GetCell(7);
+                                                        ICell cloudCell = currentRow.GetCell(8);
+                                                        ICell limitCell = currentRow.GetCell(9);
+                                                        ICell visibilityCell = currentRow.GetCell(10);
                                                         ICell appearanceCell = currentRow.GetCell(11);
 
-                                                        if (appearanceCell != null)
-                                                        {
-                                                            appearanceValue = appearanceCell.ToString(); // Теперь безопасно вызывать ToString()
-                                                        }
-                                                        else
-                                                        {
-                                                            // Обработка случая, когда ячейка отсутствует (NULL)
-                                                            Console.WriteLine("Ячейка 11 отсутствует в строке.");
-                                                            appearanceValue = string.Empty; // Или другое значение по умолчанию
-                                                        }
+                                                        string? appearanceValue = appearanceCell != null ? appearanceCell.ToString() : string.Empty;
+                                                        int? visibilityValue = TryParseInt(visibilityCell);
+                                                        int? limitValue = TryParseInt(limitCell);
+                                                        int? cloudValue = TryParseInt(cloudCell);
+                                                        int? speedValue = TryParseInt(speedCell);
+                                                        string? windValue = windCell != null ? windCell.ToString() : string.Empty;
+                                                        int? pressureValue = TryParseInt(pressureCell);
+                                                        decimal? dewValue = TryParseDecimal(dewCell);
+                                                        decimal? airValue = TryParseDecimal(airCell);
+                                                        decimal? tempValue = TryParseDecimal(tempCell);
+                                                        string? timeValue = windCell != null ? timeCell.ToString() : string.Empty;
+                                                        DateTime? dateValue = TryParseDate(dateCell);
+
+
 
 
                                                         Weather weather = new Weather
                                                         {
-                                                            // ... другие свойства ...
-                                                            Appearance = appearanceValue // Используем значение, полученное с проверкой на null
+                                                            HorizontalVisibility = visibilityValue,
+                                                            Appearance = appearanceValue,
+                                                            CloudLimit = limitValue,
+                                                            Cloudiness = cloudValue,
+                                                            WindSpeed = speedValue,
+                                                            Wind = windValue,
+                                                            Pressure = pressureValue,
+                                                            DewPoint = dewValue,
+                                                            AirHumidity = airValue,
+                                                            Temperature = tempValue,
+                                                            Time = timeValue,
+                                                            Date = dateValue
+
                                                         };
 
                                                         if (weather != null)
@@ -109,12 +135,12 @@ namespace DynamicSun.Service
                                         
                                     }
                                 }
-                            }
-                            catch (Exception ex)
-                            {
-                                return $"Ошибка при обработке файла {fileName}: {ex.Message}";
-                            }
                         }
+                            catch (Exception ex)
+            {
+                return $"Ошибка при обработке файла {fileName}: {ex.Message}";
+            }
+        }
                         else
                         {
                             return $"Неверный формат файла: {fileName}.  Разрешены только .xlsx, .xls";
@@ -134,6 +160,69 @@ namespace DynamicSun.Service
             catch (Exception ex)
             {
                 return ex.ToString();
+            }
+        }
+
+        static int? TryParseInt(ICell cell)
+        {
+            if (cell != null && !string.IsNullOrWhiteSpace(cell.ToString()))
+            {
+                if (int.TryParse(cell.ToString(), out int parsed))
+                {
+                    return parsed;
+                }
+                else
+                {
+                    Console.WriteLine($"Неверный формат видимости: {cell.ToString()}");
+                    return null;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ячейка видимости пуста или отсутствует.");
+                return null;
+            }
+        }
+
+        static decimal? TryParseDecimal(ICell cell)
+        {
+            if (cell != null && !string.IsNullOrWhiteSpace(cell.ToString()))
+            {
+                if (decimal.TryParse(cell.ToString(), out decimal parsed))
+                {
+                    return parsed;
+                }
+                else
+                {
+                    Console.WriteLine($"Неверный формат видимости: {cell.ToString()}");
+                    return null;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ячейка видимости пуста или отсутствует.");
+                return null;
+            }
+        }
+
+        static DateTime? TryParseDate(ICell cell)
+        {
+            if (cell != null && !string.IsNullOrWhiteSpace(cell.ToString()))
+            {
+                if (DateTime.TryParse(cell.ToString(), out DateTime parsed))
+                {
+                    return parsed;
+                }
+                else
+                {
+                    Console.WriteLine($"Неверный формат видимости: {cell.ToString()}");
+                    return null;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ячейка видимости пуста или отсутствует.");
+                return null;
             }
         }
     }

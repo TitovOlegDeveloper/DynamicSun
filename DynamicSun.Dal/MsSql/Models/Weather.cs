@@ -15,7 +15,7 @@ namespace DynamicSun.Dal.MsSql.Models
         public decimal? Temperature { get; set; }
         public decimal? AirHumidity { get; set; }
         public decimal? DewPoint { get; set; }
-        public decimal? Pressure { get; set; }
+        public int? Pressure { get; set; }
         public string? Wind { get; set; }
         public int? WindSpeed { get; set; }
         public int? Cloudiness { get; set; }
