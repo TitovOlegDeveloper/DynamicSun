@@ -1,5 +1,6 @@
 using DynamicSun.Dal.MsSql.Context;
 using DynamicSun.Dal.MsSql.Models;
+using DynamicSun.Dal.Query;
 using DynamicSun.Domain.Abstractions;
 using DynamicSun.Service;
 using MathNet.Numerics.Interpolation;
@@ -18,6 +19,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<ILoadService, LoadService>();
 builder.Services.AddScoped<IWeather, Weather>();
+builder.Services.AddScoped<IWeatherQuery, WeatherQuery>();
 
 var ConnectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<MSContext>(opt => opt.UseSqlServer(ConnectionString));

@@ -11,4 +11,13 @@
     <PackageReference Include="Microsoft.Identity.Client" Version="4.69.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="DynamicSun.Dal">
+      <HintPath>bin\Debug\net8.0\DynamicSun.Dal.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamicSun.Domain">
+      <HintPath>bin\Debug\net8.0\DynamicSun.Domain.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

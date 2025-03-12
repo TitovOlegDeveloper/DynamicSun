@@ -19,15 +19,19 @@ namespace DynamicSun.Service
     public class LoadService : ILoadService
     {
 
-        MSContext _db;
+        IWeatherQuery _query;
 
-        public LoadService(MSContext db)
+
+        public LoadService(IWeatherQuery query)
         {
-            _db = db;
+            _query = query;
         }
 
         Helper _helper = new ExcelHelper();
         List<Weather> _weathers = new List<Weather>();
+
+
+
         public string LoadFiles(IFormFile[] files)
         {
             try
@@ -63,12 +67,12 @@ namespace DynamicSun.Service
 
                                     if (workbook != null)
                                     {
-                                        for (int i = 0; i < workbook.NumberOfSheets;i++)
+                                        for (int i = 0; i < workbook.NumberOfSheets; i++)
                                         {
-                                            ISheet sheet = workbook.GetSheetAt(i); 
+                                            ISheet sheet = workbook.GetSheetAt(i);
                                             if (sheet != null)
                                             {
-                                                int rowCount = sheet.LastRowNum; 
+                                                int rowCount = sheet.LastRowNum;
                                                 IRow firstRow = sheet.GetRow(0);
                                                 int colCount = firstRow != null ? firstRow.LastCellNum : 0;
 
@@ -78,35 +82,18 @@ namespace DynamicSun.Service
 
                                                     if (currentRow != null)
                                                     {
-
-                                                        ICell dateCell = currentRow.GetCell(0);
-                                                        ICell timeCell = currentRow.GetCell(1);
-                                                        ICell tempCell = currentRow.GetCell(2);
-                                                        ICell airCell = currentRow.GetCell(3);
-                                                        ICell dewCell = currentRow.GetCell(4);
-                                                        ICell pressureCell = currentRow.GetCell(5);
-                                                        ICell windCell = currentRow.GetCell(6);
-                                                        ICell speedCell = currentRow.GetCell(7);
-                                                        ICell cloudCell = currentRow.GetCell(8);
-                                                        ICell limitCell = currentRow.GetCell(9);
-                                                        ICell visibilityCell = currentRow.GetCell(10);
-                                                        ICell appearanceCell = currentRow.GetCell(11);
-
-                                                        string? appearanceValue = appearanceCell != null ? appearanceCell.ToString() : string.Empty;
-                                                        int? visibilityValue = TryParseInt(visibilityCell);
-                                                        int? limitValue = TryParseInt(limitCell);
-                                                        int? cloudValue = TryParseInt(cloudCell);
-                                                        int? speedValue = TryParseInt(speedCell);
-                                                        string? windValue = windCell != null ? windCell.ToString() : string.Empty;
-                                                        int? pressureValue = TryParseInt(pressureCell);
-                                                        decimal? dewValue = TryParseDecimal(dewCell);
-                                                        decimal? airValue = TryParseDecimal(airCell);
-                                                        decimal? tempValue = TryParseDecimal(tempCell);
-                                                        string? timeValue = windCell != null ? timeCell.ToString() : string.Empty;
-                                                        DateTime? dateValue = TryParseDate(dateCell);
-
-
-
+                                                        string? appearanceValue = currentRow.GetCell(11) != null ? currentRow.GetCell(11).ToString() : string.Empty;
+                                                        int? visibilityValue = TryParseInt(currentRow.GetCell(10));
+                                                        int? limitValue = TryParseInt(currentRow.GetCell(9));
+                                                        int? cloudValue = TryParseInt(currentRow.GetCell(8));
+                                                        int? speedValue = TryParseInt(currentRow.GetCell(7));
+                                                        string? windValue = currentRow.GetCell(6) != null ? currentRow.GetCell(6).ToString() : string.Empty;
+                                                        int? pressureValue = TryParseInt(currentRow.GetCell(5));
+                                                        decimal? dewValue = TryParseDecimal(currentRow.GetCell(4));
+                                                        decimal? airValue = TryParseDecimal(currentRow.GetCell(3));
+                                                        decimal? tempValue = TryParseDecimal(currentRow.GetCell(2));
+                                                        string? timeValue = currentRow.GetCell(1) != null ? currentRow.GetCell(1).ToString() : string.Empty;
+                                                        DateTime? dateValue = TryParseDate(currentRow.GetCell(0));
 
                                                         Weather weather = new Weather
                                                         {
@@ -126,36 +113,31 @@ namespace DynamicSun.Service
                                                         };
 
                                                         if (weather != null)
-                                                        _weathers.Add(weather);
+                                                            _weathers.Add(weather);
                                                     }
                                                 }
                                             }
                                         }
-
-                                        
                                     }
                                 }
-                        }
+                            }
                             catch (Exception ex)
-            {
-                return $"Ошибка при обработке файла {fileName}: {ex.Message}";
-            }
-        }
+                            {
+                                return $"Ошибка при обработке файла {fileName}: {ex.Message}";
+                            }
+                        }
                         else
                         {
                             return $"Неверный формат файла: {fileName}.  Разрешены только .xlsx, .xls";
                         }
                     }
-                }
-
-                using (var db = new MSContext())
-                {
-                    db.Weathers.AddRange(_weathers);
-                    db.SaveChanges();
 
                 }
 
-                return "Файлы успешно обработаны!";
+                return _query.AddWeather(_weathers).Result.ToString();
+            
+
+               
             }
             catch (Exception ex)
             {
@@ -163,6 +145,7 @@ namespace DynamicSun.Service
             }
         }
 
+        
         static int? TryParseInt(ICell cell)
         {
             if (cell != null && !string.IsNullOrWhiteSpace(cell.ToString()))
