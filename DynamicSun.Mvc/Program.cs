@@ -17,6 +17,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
 builder.Services.AddScoped<ILoadService, LoadService>();
 builder.Services.AddScoped<IWeather, Weather>();
 builder.Services.AddScoped<IWeatherQuery, WeatherQuery>();

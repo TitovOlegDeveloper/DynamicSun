@@ -1,23 +1,88 @@
 ﻿@{
     ViewData["Title"] = "Просмотр погоды";
+    
 }
+@model DynamicSun.Dal.Query.WeatherQuery
 
-<div class="text-center bg-image min-vh-100 d-flex justify-content-center align-items-center flex-column ">
-    <h1 class="display-4 text-white  fw-bold ">@ViewData["Title"]</h1>
 
-    <form asp-controller="Load" asp-action="AddFiles" method="post" enctype="multipart/form-data">
-        <div class="m-5">
-            <input type="file" name="files" multiple class="form-control" accept="*/*" />
-            <button type="submit" class="w-100 h-100 bg-transparent text-white p-3 mb-3 fw-bold border-2 border-white fs-3">Загрузить</button>
-        </div>
-        <p class=" text-white">
-            @if (!string.IsNullOrEmpty(ViewBag.Message))
-            {
 
-                @ViewBag.Message
+<div class="text-center bg-image h-auto d-flex justify-content-center align-items-center flex-column ">
+    <h1 class="display-4 text-white mt-5  fw-bold ">@ViewData["Title"]</h1>
 
-            }
-        </p>
-    </form>
-    <a class="nav-link text-white bg-gradient fs-2 mt-5" asp-area="" asp-controller="Home" asp-action="Index">Назад</a>
+    <a class="nav-link text-white bg-gradient fs-2 mt-5 mb-3" asp-area="" asp-controller="Home" asp-action="Index">Назад</a>
 </div>
+<div class="d-flex align-content-center flex-column align-items-center m-3">
+
+<table id="dataTable" class="table table-bordered table-striped w-75 ">
+    <thead>
+        <tr>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</div>
+
+@section Scripts {
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("dataTable");
+            const thead = table.querySelector("thead tr");
+            const tbody = table.querySelector("tbody");
+
+            function loadAndDisplayData() {
+                fetch('/Unload/UnloadReport')
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Network response was not ok');
+                        }
+                    })
+                    .then(data => {
+                        // Очищаем таблицу перед добавлением новых данных
+                        thead.innerHTML = "";
+                        tbody.innerHTML = "";
+
+                        if (data && data.length > 0) {
+                            // Заголовки
+                            const firstItem = data[0];
+                            for (const key in firstItem) {
+                                const th = document.createElement("th");
+                                th.textContent = key;
+                                thead.appendChild(th);
+                            }
+
+                            // Данные
+                            data.forEach(item => {  // Открываем блок для forEach
+                                const tr = document.createElement("tr");
+
+                                for (const key in item) {
+                                    const td = document.createElement("td"); // Добавляем const или let перед объявлением td
+                                    td.textContent = item[key];
+                                    tr.appendChild(td);
+                                }
+                                tbody.appendChild(tr);
+                            });
+                        } else {
+                            // Если данных нет, показываем сообщение
+                            tbody.innerHTML = "<tr><td colspan='" + thead.children.length + "'>Нет данных</td></tr>";
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        alert('Ошибка при загрузке данных');
+                    });
+            }
+
+            loadAndDisplayData(); // Загружаем данные при загрузке страницы
+        });
+    </script>
+    }
+
+

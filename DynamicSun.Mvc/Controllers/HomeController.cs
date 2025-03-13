@@ -1,3 +1,4 @@
+using DynamicSun.Dal.MsSql.Models;
 using DynamicSun.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -28,7 +29,7 @@ namespace DynamicSun.Mvc.Controllers
             return View();
         }
 
-        
+     
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

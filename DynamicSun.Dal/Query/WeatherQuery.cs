@@ -24,5 +24,16 @@ namespace DynamicSun.Dal.Query
             }
         }
 
+        public List<Weather> GetWeather()
+        {
+            using (var db = new MSContext())
+            {
+
+               // return db.Weathers.OrderBy(x => x.Date).Skip(pageSize * pageNum).Take(pageSize).ToList();
+                return db.Weathers.OrderBy(x => x.Date).ToList();
+                
+            }
+        }
+
     }
 }
