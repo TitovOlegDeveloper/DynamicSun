@@ -2,7 +2,9 @@
 using DynamicSun.Domain.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using NPOI.SS.UserModel;
 
 namespace DynamicSun.Mvc.Controllers
 {
@@ -18,11 +20,13 @@ namespace DynamicSun.Mvc.Controllers
 
         }
 
-      
+
+        private int pageSize = 10;
         [HttpGet]
-        public ContentResult UnloadReport()
+        public ContentResult UnloadReport(int pageNum)
         {
-            return Content(JsonConvert.SerializeObject(_dal.GetWeather()), "application/json");
+            
+            return Content(JsonConvert.SerializeObject(_dal.GetWeather(pageSize, pageNum)), "application/json");
         }
 
     }

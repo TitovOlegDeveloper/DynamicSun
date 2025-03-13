@@ -28,20 +28,11 @@ namespace DynamicSun.Dal.Query
 
       
 
-        public List<Weather> GetWeather()
+        public List<Weather> GetWeather(int pageSize, int pageNum)
         {
             using (var db = new MSContext())
             {
-               
-               // return db.Weathers.OrderBy(x => x.Date).Skip(pageSize * pageNum).Take(pageSize).ToList();
-                return db.Weathers.OrderBy(x => x.Date).Skip(10 * 1).Take(10).ToList();
-
-             
-        
-
-                // return db.Weathers.OrderBy(x => x.Date).ToList();
-
-
+                return db.Weathers.OrderBy(x => x.Id).Skip(pageSize * pageNum).Take(pageSize).ToList();
             }
         }
 
