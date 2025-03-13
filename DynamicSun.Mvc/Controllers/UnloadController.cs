@@ -22,20 +22,7 @@ namespace DynamicSun.Mvc.Controllers
         [HttpGet]
         public ContentResult UnloadReport()
         {
-            
-            List<object> data = new List<object>()
-            {
-                new { Id = 1, Name = "Item 1", Value = 10 },
-                new { Id = 2, Name = "Item 2", Value = 20 }
-            };
-
- 
-            string jsonData = JsonConvert.SerializeObject(_dal.GetWeather());
-
-       
-            return Content(jsonData, "application/json");
-
-            
+            return Content(JsonConvert.SerializeObject(_dal.GetWeather()), "application/json");
         }
 
     }

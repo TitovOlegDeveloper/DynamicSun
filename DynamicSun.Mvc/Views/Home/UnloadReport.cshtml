@@ -13,76 +13,165 @@
 </div>
 <div class="d-flex align-content-center flex-column align-items-center m-3">
 
-<table id="dataTable" class="table table-bordered table-striped w-75 ">
-    <thead>
-        <tr>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+    <table id="dataTable" class="table table-bordered table-striped w-75">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Temperature</th>
+                <th>AirHumidity</th>
+                <th>DewPoint</th>
+                <th>Pressure</th>
+                <th>Wind</th>
+                <th>WindSpeed</th>
+                <th>Cloudiness</th>
+                <th>CloudLimit</th>
+                <th>HorizontalVisibility</th>
+                <th>Appearance</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 
 @section Scripts {
-
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const table = document.getElementById("dataTable");
-            const thead = table.querySelector("thead tr");
-            const tbody = table.querySelector("tbody");
+          const table = document.getElementById("dataTable");
+          const tbody = table.querySelector("tbody");
 
-            function loadAndDisplayData() {
-                fetch('/Unload/UnloadReport')
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            throw new Error('Network response was not ok');
-                        }
-                    })
-                    .then(data => {
-                        // Очищаем таблицу перед добавлением новых данных
-                        thead.innerHTML = "";
-                        tbody.innerHTML = "";
-
-                        if (data && data.length > 0) {
-                            // Заголовки
-                            const firstItem = data[0];
-                            for (const key in firstItem) {
-                                const th = document.createElement("th");
-                                th.textContent = key;
-                                thead.appendChild(th);
-                            }
-
-                            // Данные
-                            data.forEach(item => {  // Открываем блок для forEach
-                                const tr = document.createElement("tr");
-
-                                for (const key in item) {
-                                    const td = document.createElement("td"); // Добавляем const или let перед объявлением td
-                                    td.textContent = item[key];
-                                    tr.appendChild(td);
-                                }
-                                tbody.appendChild(tr);
-                            });
-                        } else {
-                            // Если данных нет, показываем сообщение
-                            tbody.innerHTML = "<tr><td colspan='" + thead.children.length + "'>Нет данных</td></tr>";
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Ошибка:', error);
-                        alert('Ошибка при загрузке данных');
-                    });
+          // Функция для переименования ключей в объекте
+          function renameKey(obj, oldKey, newKey) {
+            if (obj.hasOwnProperty(oldKey)) {
+              obj[newKey] = obj[oldKey];
+              delete obj[oldKey];
             }
+          }
 
-            loadAndDisplayData(); // Загружаем данные при загрузке страницы
+          function loadAndDisplayData() {
+            fetch('/Unload/UnloadReport')
+              .then(response => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error('Network response was not ok');
+                }
+              })
+              .then(data => {
+                tbody.innerHTML = "";
+
+                if (data && data.length > 0) {
+                  // Определяем имена столбцов из JSON-данных (и переименовываем)
+                  const columnNames = Object.keys(data[0]).map(key => {
+                    if (key === "Date") {
+                      return "Дата"; // Переименовываем столбец "Date" в "Дата"
+                    }
+                    else if(key == "Time")
+                    {
+                        return "Время (московское)";
+                    }
+                     else if(key == "Temperature")
+                    {
+                        return "Т";
+                    }
+                     else if(key == "AirHumidity")
+                     {
+                        return "Влажность воздуха";
+                    }
+                     else if(key == "DewPoint")
+                     {
+                        return "Точка росы";
+                    }
+                     else if(key == "Pressure")
+                     {
+                        return "Атм. давление";
+                    }
+                    else if(key == "Wind")
+                     {
+                        return "Направление ветра";
+                    }
+                    else if(key == "WindSpeed")
+                     {
+                        return "Скорость ветра";
+                    }
+                    else if(key == "Cloudiness")
+                     {
+                        return "Облачность";
+                    }
+                    else if(key == "CloudLimit")
+                     {
+                        return "Нижняя граница облачности";
+                    }
+                    else if(key == "HorizontalVisibility")
+                     {
+                        return "Горизонтальная видимость";
+                    }
+                    else if(key == "Appearance")
+                     {
+                        return "Погодные явления";
+                    }
+                    return key; // Оставляем остальные имена столбцов без изменений
+                  });
+
+
+
+                  // Обновляем заголовки таблицы
+                  const thead = table.querySelector("thead");
+                  thead.innerHTML = ""; // Очищаем существующие заголовки
+                  const headerRow = document.createElement("tr");
+                  columnNames.forEach(columnName => {
+                    const th = document.createElement("th");
+                    th.textContent = columnName;
+                    headerRow.appendChild(th);
+                  });
+                  thead.appendChild(headerRow);
+
+                  data.forEach(item => {
+                    // Переименовываем ключ "Date" в "Дата" в каждом объекте данных
+                    renameKey(item, "Date", "Дата");
+                    renameKey(item, "Time", "Время (московское)");
+                    renameKey(item, "Temperature", "Т");
+                    renameKey(item, "AirHumidity", "Влажность воздуха");
+                    renameKey(item, "DewPoint", "Точка росы");
+                    renameKey(item, "Pressure", "Атм. давление");
+                    renameKey(item, "Wind", "Направление ветра");
+                    renameKey(item, "WindSpeed", "Скорость ветра");
+                    renameKey(item, "Cloudiness", "Облачность");
+                    renameKey(item, "CloudLimit", "Нижняя граница облачности");
+                    renameKey(item, "HorizontalVisibility", "Горизонтальная видимость");
+                    renameKey(item, "Appearance", "Погодные явления");
+
+                    const tr = document.createElement("tr");
+                    columnNames.forEach(columnName => {
+                      const td = document.createElement("td");
+                      td.textContent = item[columnName] || ""; // Проверяем, есть ли такое свойство в объекте
+                      tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                  });
+                } else {
+                  // Если данных нет, показываем сообщение
+                  const noDataRow = document.createElement("tr");
+                  const noDataCell = document.createElement("td");
+                  noDataCell.setAttribute("colspan", columnNames.length);
+                  noDataCell.textContent = "Нет данных";
+                  noDataRow.appendChild(noDataCell);
+                  tbody.appendChild(noDataRow);
+                }
+              })
+              .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Ошибка при загрузке данных');
+              });
+          }
+
+          loadAndDisplayData(); // Загружаем данные при загрузке страницы
         });
     </script>
-    }
+}
 
 
