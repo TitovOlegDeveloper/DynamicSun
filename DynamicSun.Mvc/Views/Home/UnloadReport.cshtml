@@ -1,9 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Просмотр погоды";
-    ViewData["NumPage"] = 0;
-    
+
+
 }
 @model DynamicSun.Dal.Query.WeatherQuery
+
+
 
 
 
@@ -34,6 +36,7 @@
         <tbody>
         </tbody>
     </table>
+    <p id="messageDisplay">@ViewBag.Message </p>
     <p>
         <button class="border-0 bg-white" id="prevPage">Назад</button>
 
@@ -47,29 +50,62 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+        let page = 0;
+       
+     
 
                    document.getElementById("nextPage").addEventListener("click", function() {
 
-                       loadAndDisplayData(@ViewData["NumPage"] + 1);
+                       page += 1;
+                       loadAndDisplayData(page);
+                       
       
         });
 
            document.getElementById("prevPage").addEventListener("click", function() {
-        loadAndDisplayData(@ViewData["NumPage"] - 1);
+                page -=1;
+                loadAndDisplayData(page);
         });
 
         document.addEventListener("DOMContentLoaded", function() {
         
-          loadAndDisplayData(@ViewData["NumPage"]); 
+          loadAndDisplayData(page); 
         });
+
+            function GetCountRows() {
+            return fetch('@Url.Action("GetCountWeather", "Unload")')
+                .then(response => {
+                    if (response.ok) {
+                        return response.text(); 
+                    } else {
+                        throw new Error('Произошла ошибка');
+                    }
+                })
+                .then(text => {  
+                    const count = parseInt(text, 10); 
+                    if (isNaN(count)) {
+                        console.error("Ошибка: Не получается преобразовать значение в число.");
+                        return null; 
+                    }
+                    return count; 
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    return null;  
+                });
+        }
+
 
         function loadAndDisplayData(n) {
              const table = document.getElementById("dataTable");
           const tbody = table.querySelector("tbody");
+           let countRows = 0;
+        let totalPages = 0;
 
 
+          
 
-          // Функция для переименования ключей в объекте
+
           function renameKey(obj, oldKey, newKey) {
             if (obj.hasOwnProperty(oldKey)) {
               obj[newKey] = obj[oldKey];
@@ -82,17 +118,30 @@
                 if (response.ok) {
                   return response.json();
                 } else {
-                  throw new Error('Network response was not ok');
+                  throw new Error('Плохой ответ');
                 }
               })
               .then(data => {
                 tbody.innerHTML = "";
 
                 if (data && data.length > 0) {
-                  // Определяем имена столбцов из JSON-данных (и переименовываем)
+         
+                         GetCountRows()
+        .then(countRows => {
+            if (countRows === null) {
+                console.error("Нет записей");
+                return;
+            }
+
+            totalPages = Math.ceil(countRows / 10);
+
+
+            document.getElementById("nextPage").disabled = (page >= totalPages - 1);
+            document.getElementById("prevPage").disabled = (page <= 0);
+        });
                   const columnNames = Object.keys(data[0]).map(key => {
                     if (key === "Date") {
-                      return "Дата"; // Переименовываем столбец "Date" в "Дата"
+                      return "Дата"; 
                     }
                     else if(key == "Time")
                     {
@@ -138,14 +187,13 @@
                      {
                         return "Погодные явления";
                     }
-                    return key; // Оставляем остальные имена столбцов без изменений
+                    return key; 
                   });
 
 
 
-                  // Обновляем заголовки таблицы
                   const thead = table.querySelector("thead");
-                  thead.innerHTML = ""; // Очищаем существующие заголовки
+                  thead.innerHTML = ""; 
                   const headerRow = document.createElement("tr");
                   columnNames.forEach(columnName => {
                     const th = document.createElement("th");
@@ -155,7 +203,7 @@
                   thead.appendChild(headerRow);
 
                   data.forEach(item => {
-                    // Переименовываем ключ "Date" в "Дата" в каждом объекте данных
+                 
                     renameKey(item, "Date", "Дата");
                     renameKey(item, "Time", "Время (московское)");
                     renameKey(item, "Temperature", "Т");
@@ -172,24 +220,23 @@
                     const tr = document.createElement("tr");
                     columnNames.forEach(columnName => {
                       const td = document.createElement("td");
-                      td.textContent = item[columnName] || ""; // Проверяем, есть ли такое свойство в объекте
+                      td.textContent = item[columnName] || ""; 
                       tr.appendChild(td);
                     });
                     tbody.appendChild(tr);
                   });
                 } else {
-                  // Если данных нет, показываем сообщение
                   const noDataRow = document.createElement("tr");
                   const noDataCell = document.createElement("td");
                   noDataCell.setAttribute("colspan", columnNames.length);
                   noDataCell.textContent = "Нет данных";
                   noDataRow.appendChild(noDataCell);
                   tbody.appendChild(noDataRow);
+
                 }
               })
               .catch(error => {
-                console.error('Ошибка:', error);
-                alert('Ошибка при загрузке данных');
+                document.getElementById("messageDisplay").textContent = "Нет записей :(";
               });
           }
     </script>

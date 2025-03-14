@@ -1,6 +1,7 @@
 ﻿using DynamicSun.Dal.MsSql.Context;
 using DynamicSun.Dal.MsSql.Models;
 using DynamicSun.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +34,14 @@ namespace DynamicSun.Dal.Query
             using (var db = new MSContext())
             {
                 return db.Weathers.OrderBy(x => x.Id).Skip(pageSize * pageNum).Take(pageSize).ToList();
+            }
+        }
+
+        public int CountWeather()
+        {
+            using (var db = new MSContext())
+            {
+                return db.Weathers.Count();
             }
         }
 

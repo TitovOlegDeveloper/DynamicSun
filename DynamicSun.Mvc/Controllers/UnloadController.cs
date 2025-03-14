@@ -25,10 +25,13 @@ namespace DynamicSun.Mvc.Controllers
         [HttpGet]
         public ContentResult UnloadReport(int pageNum)
         {
-            @ViewData["NumPage"] = pageNum;
-            Console.WriteLine(@ViewData["NumPage"]);
-            Console.WriteLine("f");
             return Content(JsonConvert.SerializeObject(_dal.GetWeather(pageSize, pageNum)), "application/json");
+        }
+
+        [HttpGet]
+        public int GetCountWeather()
+        {
+            return _dal.CountWeather();
         }
 
     }
