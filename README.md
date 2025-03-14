@@ -1,6 +1,7 @@
-Испытательное задание от DynamicSun - "Загрузка и просмотр архивов погодных условий в Москве"
+__Test task from DynamicSun - "Downloading and viewing archives of weather conditions in Moscow"__
 
-Пример приложения .NET, реализующего веб-приложение для просмотра и загрузки архивов с использованием многоуровневой архитектуры на основе ASP.NET Core.MVC.
+An example of a .NET application implementing a web application for viewing and downloading archives using a multi-tier architecture based on ASP.NET Core.MVC.
+
 ![Диаграмма активности](https://github.com/user-attachments/assets/e0c3cde4-80f1-488b-a03e-c702de66cd4d)
-![Главная страница](https://github.com/user-attachments/assets/a47e390e-85f5-44d4-b1c5-44aecc538c02)
 
+![Основная страница](https://github.com/user-attachments/assets/9311edeb-277d-4d79-a77d-5abcedf00d99)
