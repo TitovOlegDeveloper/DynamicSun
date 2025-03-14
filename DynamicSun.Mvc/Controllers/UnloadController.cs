@@ -11,12 +11,12 @@ namespace DynamicSun.Mvc.Controllers
     public class UnloadController : Controller
     {
         ILoadService _loadService;
-        IWeatherQuery _dal;
+        IUnloadService _unloadService;
 
-        public UnloadController(ILoadService loadService, IWeatherQuery dal)
+        public UnloadController(ILoadService loadService, IUnloadService unloadService)
         {
             _loadService = loadService;
-            _dal = dal;
+            _unloadService = unloadService;
 
         }
 
@@ -25,7 +25,7 @@ namespace DynamicSun.Mvc.Controllers
         [HttpGet("/Unload/UnloadReport/{pageNum}/{firstDate}/{secondDate}")]
         public ContentResult UnloadReport(int pageNum, DateTime? firstDate, DateTime? secondDate)
         {
-            return Content(JsonConvert.SerializeObject(_dal.GetWeather(pageSize, pageNum, firstDate, secondDate)), "application/json");
+            return Content(JsonConvert.SerializeObject(_unloadService.GetResultTable(pageSize, pageNum,firstDate,secondDate)), "application/json");
         }
 
 
@@ -33,7 +33,7 @@ namespace DynamicSun.Mvc.Controllers
         [HttpGet("/Unload/GetCountWeather/{firstDate}/{secondDate}")]
         public int GetCountWeather(DateTime? firstDate, DateTime? secondDate)
         {
-            return _dal.CountWeather(firstDate, secondDate);
+            return _unloadService.GetCountRows(firstDate, secondDate);
         }
 
     }

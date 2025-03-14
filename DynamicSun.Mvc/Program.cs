@@ -19,6 +19,7 @@ builder.Services.AddRazorComponents()
 
 
 builder.Services.AddScoped<ILoadService, LoadService>();
+builder.Services.AddScoped<IUnloadService, UnloadService>();
 builder.Services.AddScoped<IWeather, Weather>();
 builder.Services.AddScoped<IWeatherQuery, WeatherQuery>();
 
