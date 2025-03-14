@@ -23,7 +23,7 @@ namespace DynamicSun.Dal.Query
 
                  db.Weathers.AddRange(weathers);
                  await db.SaveChangesAsync();
-                return "Записи успешно добавлены!";
+                return  "Записи успешно добавлены!";
             }
         }
 
