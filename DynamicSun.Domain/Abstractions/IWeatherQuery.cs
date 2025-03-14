@@ -10,8 +10,8 @@ namespace DynamicSun.Domain.Abstractions
     {
         public Task<string> AddWeather(List<Weather> _weathers);
 
-        public List<Weather> GetWeather(int pageSize, int pageNum);
-        public int CountWeather();
+        public List<Weather> GetWeather(int pageSize, int pageNum, DateTime? firstDate, DateTime? secondDate);
+        public int CountWeather(DateTime? firstDate, DateTime? secondDate);
     }
 
 }

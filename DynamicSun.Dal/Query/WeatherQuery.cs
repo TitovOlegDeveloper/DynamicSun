@@ -29,19 +29,31 @@ namespace DynamicSun.Dal.Query
 
       
 
-        public List<Weather> GetWeather(int pageSize, int pageNum)
+        public List<Weather> GetWeather(int pageSize, int pageNum, DateTime? firstDate, DateTime? secondDate)
         {
             using (var db = new MSContext())
             {
-                return db.Weathers.OrderBy(x => x.Id).Skip(pageSize * pageNum).Take(pageSize).ToList();
+                return  firstDate == null && secondDate == null ?
+                    db.Weathers.OrderBy(x => x.Id).Skip(pageSize * pageNum).Take(pageSize).ToList()
+               : db.Weathers
+                .OrderBy(x => x.Id)
+                .Where(x => x.Date >= firstDate && x.Date <= secondDate)
+                .Skip(pageSize * pageNum)
+                .Take(pageSize)
+                .ToList();
             }
         }
 
-        public int CountWeather()
+        public int CountWeather(DateTime? firstDate, DateTime? secondDate)
         {
             using (var db = new MSContext())
             {
-                return db.Weathers.Count();
+                return firstDate == null && secondDate == null ?
+                 db.Weathers.Count()
+               : db.Weathers
+                .Where(x => x.Date >= firstDate && x.Date <= secondDate)
+                .Count();
+                
             }
         }
 

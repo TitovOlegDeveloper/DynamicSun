@@ -15,7 +15,13 @@
     <a class="nav-link text-white bg-gradient fs-2 mt-5 mb-3" asp-area="" asp-controller="Home" asp-action="Index">Назад</a>
 </div>
 <div class="d-flex align-content-center flex-column align-items-center m-3">
-
+    <div class="d-flex align-items-center justify-content-center">
+        <p style="font-size:x-large; vertical-align: middle;">Выберите период с </p>
+        <input type="date" id="firstDate" class="m-2" style="vertical-align: middle;" />
+        <p style="font-size:x-large; vertical-align: middle;"> по </p>
+        <input type="date" id="secondDate" class="m-2" style="vertical-align: middle;" />
+        <button class="bg-white p-1" id="dateBtn" style="vertical-align: middle;">Поиск</button>
+    </div>
     <table id="dataTable" class="table table-bordered table-striped w-75">
         <thead>
             <tr>
@@ -38,9 +44,9 @@
     </table>
     <p id="messageDisplay">@ViewBag.Message </p>
     <p>
-        <button class="border-0 bg-white" id="prevPage">Назад</button>
+        <button class="border-0 bg-white m-3 " id="prevPage">Назад</button>
 
-        <button  class="border-0 bg-white"  id="nextPage">Далее</button>
+        <button  class="border-0 bg-white m-3 "  id="nextPage">Далее</button>
 
     </p>
 </div>
@@ -62,6 +68,11 @@
       
         });
 
+        document.getElementById("dateBtn").addEventListener("click", function(){
+           
+             loadAndDisplayData(page);
+        });
+
            document.getElementById("prevPage").addEventListener("click", function() {
                 page -=1;
                 loadAndDisplayData(page);
@@ -72,8 +83,22 @@
           loadAndDisplayData(page); 
         });
 
-            function GetCountRows() {
-            return fetch('@Url.Action("GetCountWeather", "Unload")')
+
+                function GetCountRows() {
+            const firstDateValue = firstDate.value;
+            const secondDateValue = secondDate.value;
+
+            if (!firstDateValue || !secondDateValue) {
+                 document.getElementById("messageDisplay").textContent = "Выберите период!";
+                return Promise.resolve(null); 
+            }
+
+            const encodedFirstDate = encodeURIComponent(firstDateValue);
+            const encodedSecondDate = encodeURIComponent(secondDateValue);
+
+            const url = '@Url.Action("GetCountWeather", "Unload")/' + encodedFirstDate + '/' + encodedSecondDate;
+
+            return fetch(url)
                 .then(response => {
                     if (response.ok) {
                         return response.text(); 
@@ -81,17 +106,18 @@
                         throw new Error('Произошла ошибка');
                     }
                 })
-                .then(text => {  
-                    const count = parseInt(text, 10); 
+                .then(text => {
+                    const count = parseInt(text, 10);
                     if (isNaN(count)) {
                         console.error("Ошибка: Не получается преобразовать значение в число.");
-                        return null; 
+                        return null;
                     }
-                    return count; 
+                     document.getElementById("messageDisplay").textContent = "";
+                    return count;
                 })
                 .catch(error => {
                     console.error('Ошибка:', error);
-                    return null;  
+                    return null; 
                 });
         }
 
@@ -113,7 +139,14 @@
             }
           }
 
-            fetch('/Unload/UnloadReport?pageNum=' + n)
+               const firstDateValue = firstDate.value;
+        const secondDateValue = secondDate.value;
+
+
+        const encodedFirstDate = encodeURIComponent(firstDateValue);
+        const encodedSecondDate = encodeURIComponent(secondDateValue);
+
+        fetch('/Unload/UnloadReport/' + n + '/' + encodedFirstDate + '/' + encodedSecondDate)
               .then(response => {
                 if (response.ok) {
                   return response.json();
@@ -138,6 +171,9 @@
 
             document.getElementById("nextPage").disabled = (page >= totalPages - 1);
             document.getElementById("prevPage").disabled = (page <= 0);
+            console.log(countRows);
+            console.log(totalPages);
+            console.log(page);
         });
                   const columnNames = Object.keys(data[0]).map(key => {
                     if (key === "Date") {
@@ -234,11 +270,16 @@
                   tbody.appendChild(noDataRow);
 
                 }
+
+                 document.getElementById("messageDisplay").textContent = "";
               })
               .catch(error => {
-                document.getElementById("messageDisplay").textContent = "Нет записей :(";
+                document.getElementById("messageDisplay").textContent = "Нет записей за этот период :(";
               });
           }
+
+
+
     </script>
 }
 

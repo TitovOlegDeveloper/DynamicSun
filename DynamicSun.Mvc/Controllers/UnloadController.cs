@@ -22,16 +22,18 @@ namespace DynamicSun.Mvc.Controllers
 
 
         private int pageSize = 10;
-        [HttpGet]
-        public ContentResult UnloadReport(int pageNum)
+        [HttpGet("/Unload/UnloadReport/{pageNum}/{firstDate}/{secondDate}")]
+        public ContentResult UnloadReport(int pageNum, DateTime? firstDate, DateTime? secondDate)
         {
-            return Content(JsonConvert.SerializeObject(_dal.GetWeather(pageSize, pageNum)), "application/json");
+            return Content(JsonConvert.SerializeObject(_dal.GetWeather(pageSize, pageNum, firstDate, secondDate)), "application/json");
         }
 
-        [HttpGet]
-        public int GetCountWeather()
+
+
+        [HttpGet("/Unload/GetCountWeather/{firstDate}/{secondDate}")]
+        public int GetCountWeather(DateTime? firstDate, DateTime? secondDate)
         {
-            return _dal.CountWeather();
+            return _dal.CountWeather(firstDate, secondDate);
         }
 
     }
